@@ -1,0 +1,18 @@
+#:kivy 1.0.9
+
+<RushSimulation>:
+    canvas:
+        Rectangle:
+            pos: 0, self.height - 100
+            size: self.width / 2 - 20, 100
+        Rectangle:
+            pos: self.width / 2 + 20, self.height - 100
+            size: self.width / 2 - 20, 100
+
+        Line:
+            points: (0, self.height - 100, self.width / 2 - 30, self.height - 100, self.width / 2 - 30, self.height)
+            width: 10
+
+        Line:
+            points: (self.width, self.height - 100, self.width / 2 + 30, self.height - 100, self.width / 2 + 30, self.height)
+            width: 10
