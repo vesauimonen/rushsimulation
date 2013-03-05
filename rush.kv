@@ -1,18 +1,34 @@
-#:kivy 1.0.9
+#:kivy 1.5.1
+<Vehicle>:
+    size: 16, 16
+    canvas:
+        Color:
+            rgb: 1, .42, .2
+        Ellipse:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgb: 0, 0, 0
+        Line:
+            points: (self.x, self.y, self.x + 10, self.y + 10)
+            width: 1
+
 
 <RushSimulation>:
+
     canvas:
+        Color:
+            rgb: .2, .3, .4
         Rectangle:
             pos: 0, self.height - 100
             size: self.width / 2 - 20, 100
         Rectangle:
             pos: self.width / 2 + 20, self.height - 100
             size: self.width / 2 - 20, 100
-
         Line:
             points: (0, self.height - 100, self.width / 2 - 30, self.height - 100, self.width / 2 - 30, self.height)
             width: 10
-
         Line:
             points: (self.width, self.height - 100, self.width / 2 + 30, self.height - 100, self.width / 2 + 30, self.height)
             width: 10
+
