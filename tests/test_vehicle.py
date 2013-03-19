@@ -1,6 +1,6 @@
 import unittest
 
-from kivy.vector import Vector
+from rushsimulation.vector import Vector
 from rushsimulation.vehicle import Vehicle
 
 
@@ -43,6 +43,9 @@ class TestVehicle(unittest.TestCase):
         self.assertEqual(self.vehicle.y, 0)
         self.assertTrue(self.vehicle.x >= 0)
         self.assertTrue(self.vehicle.x < 800)
+        self.assertEqual(self.vehicle.velocity, [0, 0])
+        self.assertEqual(self.vehicle.acceleration, [0, 0])
+        self.assertEqual(self.vehicle.steering_force, [0, 0])
 
 
 if __name__ == '__main__':
