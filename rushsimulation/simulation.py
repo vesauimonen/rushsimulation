@@ -68,6 +68,7 @@ class RushSimulation(Widget):
 
     def stop_button_pressed(self):
         self.stop_simulation()
+        self.start_pause_button.text = 'Start'
 
 
 class RushApp(App):
