@@ -1,6 +1,7 @@
 from random import randint
 
 from kivy.uix.widget import Widget
+from kivy.utils import interpolate
 from .vector import Vector
 
 
@@ -24,7 +25,7 @@ class Vehicle(Widget):
         self.acceleration = self.steering_force / self.mass
         self.velocity = self.velocity + self.acceleration
         self.velocity = Vector(*self.velocity).truncate(self.max_speed)
-        self.pos = self.velocity + self.pos
+        self.pos = interpolate(self.pos, self.velocity + self.pos, 2)
 
     def set_to_start_position(self):
         self.pos = Vector(randint(0, 800), 0)
@@ -42,7 +43,7 @@ class Vehicle(Widget):
     def get_overall_steering_force(self):
         # if self.get_braking_force() != Vector(0, 0):
         #     return self.get_braking_force()
-        return 0.5* self.get_seeking_force() + self.get_separation_force()
+        return 0.5 * self.get_seeking_force() + self.get_separation_force()
 
     def get_nearby_vehicles(self):
         nearby_vehicles = []
