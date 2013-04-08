@@ -6,14 +6,28 @@ from kivy.uix.widget import Widget
 
 from .vector import Vector
 from .vehicle import Vehicle
+from .wall import Wall
 
 
 class RushSimulation(Widget):
-    VEHICLE_AMOUNT = 5
+    VEHICLE_AMOUNT = 15
     Window.clearcolor = (.9, .9, .9, 1)
     vehicles = []
     simulation_on = False
     start_pause_button = ObjectProperty(None)
+
+    def __init__(self, *args, **kwargs):
+        super(RushSimulation, self).__init__(*args, **kwargs)
+        self.wall_1 = Wall(
+            (0, Window.height - 100),
+            (Window.width / 2 - 20, 100)
+        )
+        self.wall_2 = Wall(
+            (Window.width / 2 + 20, Window.height - 100),
+            (Window.width / 2 - 20, 100)
+        )
+        self.add_widget(self.wall_1)
+        self.add_widget(self.wall_2)
 
     def set_up_simulation(self):
         for i in xrange(self.VEHICLE_AMOUNT):
