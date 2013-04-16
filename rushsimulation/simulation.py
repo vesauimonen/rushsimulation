@@ -10,28 +10,30 @@ from .wall import Wall
 
 
 class RushSimulation(Widget):
-    VEHICLE_AMOUNT = 15
-    Window.clearcolor = (.9, .9, .9, 1)
     vehicles = []
     simulation_on = False
     start_pause_button = ObjectProperty(None)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user_configs, *args, **kwargs):
         super(RushSimulation, self).__init__(*args, **kwargs)
+        self.user_configs = user_configs
+        self.DOOR_SIZE = self.user_configs['Simulation']['doorSize']
+        self.VEHICLE_AMOUNT = self.user_configs['Simulation']['vehicleAmount']
+
         self.wall_1 = Wall(
             (0, Window.height - 100),
-            (Window.width / 2 - 20, 100)
+            (Window.width / 2 - self.DOOR_SIZE / 2, 100)
         )
         self.wall_2 = Wall(
-            (Window.width / 2 + 20, Window.height - 100),
-            (Window.width / 2 - 20, 100)
+            (Window.width / 2 + self.DOOR_SIZE / 2, Window.height - 100),
+            (Window.width / 2 - self.DOOR_SIZE / 2, 100)
         )
         self.add_widget(self.wall_1)
         self.add_widget(self.wall_2)
 
     def set_up_simulation(self):
         for i in xrange(self.VEHICLE_AMOUNT):
-            vehicle = Vehicle(Vector(400, 600))
+            vehicle = Vehicle(self.user_configs, Vector(400, 600))
             self.add_widget(vehicle)
             self.vehicles.append(vehicle)
             vehicle.set_to_start_position()
@@ -70,7 +72,7 @@ class RushSimulation(Widget):
             if vehicle.is_in_target():
                 vehicle.set_to_start_position()
             else:
-                vehicle.move()
+                vehicle.move(dt)
 
     def start_pause_button_pressed(self):
         if self.simulation_on:
@@ -84,8 +86,18 @@ class RushSimulation(Widget):
         self.stop_simulation()
         self.start_pause_button.text = 'Start'
 
+    def is_wall(self, point):
+        return (self.wall_1.collide_point(point[0], point[1]) or
+                self.wall_2.collide_point(point[0], point[1]))
+
 
 class RushApp(App):
+    def __init__(self, user_configs, *args, **kwargs):
+        super(RushApp, self).__init__(*args, **kwargs)
+        self.user_configs = user_configs
+
     def build(self):
-        simulation = RushSimulation()
+        #Window.size = (520, 520)
+        Window.clearcolor = (.0, .0, .0, 1)
+        simulation = RushSimulation(user_configs=self.user_configs)
         return simulation
