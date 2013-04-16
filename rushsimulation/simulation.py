@@ -19,7 +19,6 @@ class RushSimulation(Widget):
         self.user_configs = user_configs
         self.DOOR_SIZE = self.user_configs['Simulation']['doorSize']
         self.VEHICLE_AMOUNT = self.user_configs['Simulation']['vehicleAmount']
-
         self.wall_1 = Wall(
             (0, Window.height - 100),
             (Window.width / 2 - self.DOOR_SIZE / 2, 100)
@@ -86,10 +85,6 @@ class RushSimulation(Widget):
         self.stop_simulation()
         self.start_pause_button.text = 'Start'
 
-    def is_wall(self, point):
-        return (self.wall_1.collide_point(point[0], point[1]) or
-                self.wall_2.collide_point(point[0], point[1]))
-
 
 class RushApp(App):
     def __init__(self, user_configs, *args, **kwargs):
@@ -97,7 +92,6 @@ class RushApp(App):
         self.user_configs = user_configs
 
     def build(self):
-        #Window.size = (520, 520)
         Window.clearcolor = (.0, .0, .0, 1)
         simulation = RushSimulation(user_configs=self.user_configs)
         return simulation
