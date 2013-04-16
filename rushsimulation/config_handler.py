@@ -60,7 +60,7 @@ class ConfigHandler(object):
         )
 
     def validate(self, value, min, max, default):
-        if value:
+        if value and not isinstance(value, basestring):
             if value > max:
                 return max
             if value < min:
