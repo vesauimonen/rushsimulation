@@ -2,40 +2,43 @@
 #:import window kivy.core.window
 
 <Vehicle>:
-    size: 16, 16
+    size: self.size
     canvas:
+        Color:
+            rgba: 1, 1, 1, 0.8
+        Line:
+            points: (self.center[0], self.center[1], self.center[0] + 6 * self.obstacle_avoider[0], self.center[1] + 6 * self.obstacle_avoider[1])
+            width: 1
+        Line:
+            points: (self.center[0], self.center[1], self.center[0] + 4 * self.velocity[0], self.center[1] + 4 * self.velocity[1])
+            width: 1
         Color:
             rgb: 1, .42, .2
         Ellipse:
             pos: self.pos
             size: self.size
-        Color:
-            rgb: 0, 0, 0
 
 <Wall>:
     size: self.size
     pos: self.pos
     canvas:
         Color:
-            rgb: .2, .3, .4
+            rgb: .9, .9, .9
         Rectangle:
             pos: self.pos
             size: self.size
 
-
 <RushSimulation>:
-    start_pause_button: start_pause_button
+    pos: 0, 0
     size: window.Window.size
-    canvas:
-        Color:
-            rgb: .2, .3, .4
+    start_pause_button: start_pause_button
     BoxLayout:
         orientation: 'horizontal'
         spacing: 10
         padding: 15
         size: window.Window.width / 3, 60
         left: 0
-        top: 100
+        bottom: 0
         Button:
             id: start_pause_button
             text: 'Start'
