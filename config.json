@@ -1,0 +1,12 @@
+{
+    "Simulation": {
+        "vehicleAmount": 15,
+        "doorSize": 50
+    },
+    "Vehicle": {
+        "maxSpeed": 8,
+        "maxForce": 14,
+        "mass": 50,
+        "diameter": 15
+    }
+}
