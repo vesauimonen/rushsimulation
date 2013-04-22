@@ -5,30 +5,61 @@
     size: self.size
     canvas:
         Color:
-            rgba: 1, 1, 1, 0.8
+            rgba: .7, .7, .7, self.debug_graphic_alpha
         Line:
-            points: (self.center[0], self.center[1], self.center[0] + 4 * self.velocity[0], self.center[1] + 4 * self.velocity[1])
+            points: (self.pos[0], self.pos[1], self.lookup_point[0], self.lookup_point[1])
+            width: 1
+        Color:
+            rgba: 0, 0, 1, self.debug_graphic_alpha
+        Line:
+            points: (self.pos[0], self.pos[1], self.pos[0] + self.steering_force[0], self.pos[1] + self.steering_force[1])
+            width: 1
+        Color:
+            rgba: 1, 0, 0, self.debug_graphic_alpha
+        Line:
+            points: (self.pos[0], self.pos[1], self.pos[0] + 4 * self.velocity[0], self.pos[1] + 4 * self.velocity[1])
             width: 1
         Color:
             rgb: 1, .42, .2
         Ellipse:
-            pos: self.pos
+            pos: self.pos[0] - self.size[0] / 2, self.pos[1] - self.size[1] / 2
             size: self.size
+
 
 <Wall>:
     size: self.size
     pos: self.pos
     canvas:
         Color:
-            rgb: .9, .9, .9
+            rgb: 0, 0, 0
         Rectangle:
-            pos: self.pos
-            size: self.size
+            pos: self.x + 27, self.y + 27
+            size: self.size[0] - 54, self.size[1] - 27
+        Line:
+            points: (self.x + 27, self.top, self.x + 27, self.y + 27, self.x + self.width - 27, self.y + 27, self.x + self.width - 27, self.top)
+            width: 20
+        Color:
+            rgba: .9, 0, .9, self.debug_graphic_alpha
+        Line:
+            points: (self.x, self.top, self.x, self.y, self.x + self.width, self.y, self.x + self.width, self.top)
+            width: 1
+
 
 <RushSimulation>:
     pos: 0, 0
     size: window.Window.size
     start_pause_button: start_pause_button
+    canvas:
+        Color:
+            rgb: .9, .9, .9
+        Ellipse:
+            size: 1020, 1020
+            pos: -110, 90
+        Color:
+            rgba: 0, 0, 0, self.debug_graphic_alpha
+        Line:
+            points: (self.target[0], self.target[1], self.target[0], 0)
+            width: 1
     BoxLayout:
         orientation: 'horizontal'
         spacing: 10

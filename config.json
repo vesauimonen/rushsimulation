@@ -1,7 +1,8 @@
 {
     "Simulation": {
-        "vehicleAmount": 15,
-        "doorSize": 50
+        "vehicleAmount": 20,
+        "doorSize": 45,
+        "debugGraphicAlpha": 0
     },
     "Vehicle": {
         "maxSpeed": 8,
@@ -9,4 +10,5 @@
         "mass": 50,
         "diameter": 15
     }
+
 }
