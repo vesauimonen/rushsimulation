@@ -3,16 +3,35 @@ import unittest
 from rushsimulation.vector import Vector
 from rushsimulation.wall import Wall
 
+from .test_base import TestBase
 
-class TestWall(unittest.TestCase):
+
+class TestWall(TestBase):
     def setUp(self):
-        self.wall = Wall((0, 500), (375, 100))
+        super(TestWall, self).setUp()
+        self.wall = Wall(self.user_configs, (0, 500), (375, 100))
 
-    def test_collision_point(self):
+    def test_returns_x_collision_point(self):
         pos = Vector(100, 450)
-        velocity = Vector(300, 550)
-        point = self.wall.get_collision_point(velocity, pos)
+        tip = Vector(300, 550)
+        point = self.wall.get_collision_point(tip, pos)
         self.assertEqual(point, Vector(200, 500))
+
+    def test_returns_y_collision_point(self):
+        pos = Vector(400, 550)
+        tip = Vector(300, 550)
+        point = self.wall.get_collision_point(tip, pos)
+        expected_point = Vector(
+            400 - self.user_configs['Simulation']['doorSize'] / 2,
+            550
+        )
+        self.assertEqual(point, expected_point)
+
+    def test_returns_none_collision_point(self):
+        pos = Vector(400, 550)
+        tip = Vector(410, 550)
+        point = self.wall.get_collision_point(tip, pos)
+        self.assertEqual(point, None)
 
 if __name__ == '__main__':
     unittest.main()
