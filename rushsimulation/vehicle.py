@@ -16,13 +16,12 @@ class Vehicle(Widget):
     START_POSITION_ANGLE = 130
     IN_FRONT_OF_OFFSET = 50
     IN_FRONT_OF_ANGLE = 100
-    WALL_AVOIDANCE_ANGLE = 60
-    WALL_AVOIDANCE_OFFSET_CENTER = 120
-    WALL_AVOIDANCE_OFFSET_LEFT = 30
-    WALL_AVOIDANCE_OFFSET_RIGHT = 30
+    WALL_AVOIDANCE_ANGLE = 20
+    WALL_AVOIDANCE_OFFSET = 120
     SEPARATION_WEIGHT = 100
     SEEKING_WEIGHT = 1
     BRAKING_RATE = 0.3
+    MASS = 15
     # Initialized, so .kv can use these
     debug_graphic_alpha = NumericProperty(0)
     velocity = Vector(0, 0)
@@ -36,7 +35,6 @@ class Vehicle(Widget):
         self.user_configs = user_configs
         self.user_max_speed = self.user_configs['Vehicle']['maxSpeed']
         self.max_force = self.user_configs['Vehicle']['maxForce']
-        self.mass = self.user_configs['Vehicle']['mass']
         self.diameter = self.user_configs['Vehicle']['diameter']
         self.debug_graphic_alpha = \
             self.user_configs['Simulation']['debugGraphicAlpha']
@@ -82,12 +80,16 @@ class Vehicle(Widget):
         Moves the vehicle according to Simple Vehicle Model principles.
         This method is called by self.parent repeatedly.
         """
-        self.calculate_new_lookup_points()
-        self.velocity = self.calculate_new_velocity(dt)
+        self.calculate_new_lookup_point()
+        self.velocity = self.calculate_new_velocity()
         new_pos = self.validate_pos(self.velocity + self.pos)
         self.pos = interpolate(self.pos, new_pos, 3)
 
     def validate_pos(self, pos):
+        """
+        Tries to ensure that two vehicles don't overlap. Calculates distance
+        between vehicles and moves self.pos accordingly.
+        """
         for vehicle in self.parent.vehicles:
             if vehicle is self:
                 continue
@@ -95,59 +97,48 @@ class Vehicle(Widget):
                 offset = Vector(pos) - Vector(vehicle.pos)
                 offset = Vector(offset).normalize() * self.diameter
                 return Vector(vehicle.pos) + Vector(offset)
-                return (randint(0, 100), 20)
         return pos
 
-    def calculate_new_velocity(self, dt):
+    def calculate_new_velocity(self):
         """
         Calculates a new velocity for the vehicle. If slower vehicles are
         nearby, braking occurs. Otherwise steering force is used for
         the new velocity.
         """
-        self.steering_force = self.get_overall_steering_force()
-        self.acceleration = self.steering_force / self.mass
-        velocity = self.velocity + self.acceleration
-        velocity = Vector(velocity).truncate(self.max_speed)
+
+        # Allowing an 20% chance of not checking the need for braking
         if randint(0, 10) > 1:
             distance = self.get_distance_to_slow_vehicle()
             if distance < self.IN_FRONT_OF_OFFSET:
-                return self.brake(velocity, distance, dt)
+                return self.brake(self.velocity, distance)
+        self.steering_force = self.get_overall_steering_force()
+        self.acceleration = self.steering_force / self.MASS
+        velocity = self.velocity + self.acceleration
+        velocity = Vector(velocity).truncate(self.max_speed)
         return velocity
 
-    def calculate_new_lookup_points(self):
+    def calculate_new_lookup_point(self):
         """
         Returns a random point in front of the vehicle within a certain angle
         and distance.
         """
         offset = self.velocity.normalize()
-        offset_center = offset.rotate(randint(-10, 10))
-        offset_center *= self.WALL_AVOIDANCE_OFFSET_CENTER
-        offset_left = offset.rotate(self.WALL_AVOIDANCE_ANGLE / 2)
-        offset_left *= self.WALL_AVOIDANCE_OFFSET_LEFT
-        offset_right = offset.rotate(-self.WALL_AVOIDANCE_ANGLE / 2)
-        offset_right *= self.WALL_AVOIDANCE_OFFSET_RIGHT
+        offset_center = offset.rotate(randint(
+            -self.WALL_AVOIDANCE_ANGLE / 2,
+            self.WALL_AVOIDANCE_ANGLE / 2
+        ))
+        offset_center *= self.WALL_AVOIDANCE_OFFSET
         self.lookup_point = (
             self.pos[0] + offset_center[0],
             self.pos[1] + offset_center[1]
         )
-        self.left_lookup_point = (
-            self.pos[0] + offset_left[0],
-            self.pos[1] + offset_left[1]
-        )
-        self.right_lookup_point = (
-            self.pos[0] + offset_right[0],
-            self.pos[1] + offset_right[1]
-        )
 
-    def brake(self, velocity, distance, dt):
+    def brake(self, velocity, distance):
         """
         Returns a velocity less than current velocity, thus simulating
         a braking behaviour. The closer the nearby vehicle is the greater the
         decrease of the velocity is.
         """
-        if distance <= self.diameter + 4:
-            # Very close to another vehicle, full brakes.
-            return Vector(0, 0)
         speed = velocity.length()
         raw_braking = speed * self.BRAKING_RATE
         raw_braking *= (self.IN_FRONT_OF_OFFSET / distance)
@@ -168,8 +159,7 @@ class Vehicle(Widget):
             return wall_avoiding_force
         return (
             self.get_seeking_force() * self.SEEKING_WEIGHT +
-            self.get_separation_force() * self.SEPARATION_WEIGHT +
-            wall_avoiding_force * 2
+            self.get_separation_force() * self.SEPARATION_WEIGHT
         )
 
     def get_seeking_force(self):
@@ -177,7 +167,6 @@ class Vehicle(Widget):
         Calculates the force related to the seeking behaviour of the Simple
         Vehicle Model.
         """
-        # Vector from vehicle position towards target
         desired_direction = Vector(
             self.target[0] - self.pos[0],
             self.target[1] - self.pos[1]
@@ -197,7 +186,7 @@ class Vehicle(Widget):
             distance = Vector(self.pos).distance(vehicle.pos)
             if distance != 0:
                 sum_force = sum_force + direction * (1 / distance ** 2)
-        sum_force = Vector(*sum_force).truncate(self.max_force)
+        sum_force = Vector(sum_force).truncate(self.max_force)
         return sum_force
 
     def get_wall_avoiding_force(self):
@@ -235,7 +224,7 @@ class Vehicle(Widget):
         with given angle.
         """
         distance = Vector(self.pos).distance(collision)
-        weight = self.WALL_AVOIDANCE_OFFSET_CENTER / distance
+        weight = self.WALL_AVOIDANCE_OFFSET / distance
         direction = Vector(
             collision[0] - self.pos[0],
             collision[1] - self.pos[1]
@@ -244,6 +233,10 @@ class Vehicle(Widget):
         return direction * self.max_force * weight
 
     def get_distance_to_slow_vehicle(self):
+        """
+        Returns the distance to the closest vehicle in front of us that has
+        a smaller speed than us.
+        """
         vehicles_in_front_of = self.get_vehicles_in_front_of(
             self.IN_FRONT_OF_OFFSET,
             self.IN_FRONT_OF_ANGLE
@@ -286,5 +279,8 @@ class Vehicle(Widget):
         return vehicles_in_front_of
 
     def vectors_are_within_angular_range(self, vector_1, vector_2, angle):
+        """
+        Helper method for comparing the angluar range of two vectors.
+        """
         real_angle = vector_1.angle(vector_2)
         return real_angle > -angle / 2 and real_angle < angle / 2
