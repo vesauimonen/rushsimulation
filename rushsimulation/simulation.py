@@ -19,25 +19,25 @@ class RushSimulation(Widget):
     def __init__(self, user_configs, *args, **kwargs):
         super(RushSimulation, self).__init__(*args, **kwargs)
         self.user_configs = user_configs
-        self.DOOR_SIZE = self.user_configs['Simulation']['doorSize']
-        self.VEHICLE_AMOUNT = self.user_configs['Simulation']['vehicleAmount']
+        self.door_size = self.user_configs['Simulation']['doorSize']
+        self.vehicle_amount = self.user_configs['Simulation']['vehicleAmount']
         self.debug_graphic_alpha = \
             self.user_configs['Simulation']['debugGraphicAlpha']
         self.wall_1 = Wall(
             user_configs,
             (0, Window.height - 100),
-            (Window.width / 2 - self.DOOR_SIZE / 2, 100)
+            (Window.width / 2 - self.door_size / 2, 100)
         )
         self.wall_2 = Wall(
             user_configs,
-            (Window.width / 2 + self.DOOR_SIZE / 2, Window.height - 100),
-            (Window.width / 2 - self.DOOR_SIZE / 2, 100)
+            (Window.width / 2 + self.door_size / 2, Window.height - 100),
+            (Window.width / 2 - self.door_size / 2, 100)
         )
         self.add_widget(self.wall_1)
         self.add_widget(self.wall_2)
 
     def set_up_simulation(self):
-        for i in xrange(self.VEHICLE_AMOUNT):
+        for i in xrange(self.vehicle_amount):
             vehicle = Vehicle(self.user_configs, self.target)
             self.add_widget(vehicle)
             self.vehicles.append(vehicle)
