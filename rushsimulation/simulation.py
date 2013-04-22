@@ -1,3 +1,8 @@
+# Load configs before loading other Kivy stuff. Unfortunately it's the
+# only way to ensure that window is not resizable.
+from kivy.config import Config
+Config.set('graphics', 'resizable', 0)
+
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.clock import Clock
