@@ -12,7 +12,7 @@ class ConfigHandler(object):
 
     def handle_simulation_configs(self):
         DOOR_SIZE = [30, 80, 50]
-        VEHICLE_AMOUNT = [1, 20, 10]
+        VEHICLE_AMOUNT = [1, 20, 15]
         DEBUG_GRAPHIC_ALPHA = [0, 1, 0]
         self.config['Simulation']['doorSize'] = self.validate(
             self.config['Simulation']['doorSize'],
@@ -36,7 +36,6 @@ class ConfigHandler(object):
     def handle_vehicle_configs(self):
         MAX_SPEED = [3, 12, 8]
         MAX_FORCE = [10, 20, 14]
-        MASS = [1, 15, 5]
         DIAMETER = [5, 20, 15]
         self.config['Vehicle']['maxSpeed'] = self.validate(
             self.config['Vehicle']['maxSpeed'],
@@ -49,12 +48,6 @@ class ConfigHandler(object):
             MAX_FORCE[0],
             MAX_FORCE[1],
             MAX_FORCE[2]
-        )
-        self.config['Vehicle']['mass'] = self.validate(
-            self.config['Vehicle']['mass'],
-            MASS[0],
-            MASS[1],
-            MASS[2]
         )
         self.config['Vehicle']['diameter'] = self.validate(
             self.config['Vehicle']['diameter'],

@@ -7,7 +7,6 @@
     "Vehicle": {
         "maxSpeed": 8,
         "maxForce": 14,
-        "mass": 50,
         "diameter": 15
     }
 
