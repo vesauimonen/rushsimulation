@@ -6,21 +6,25 @@
     canvas:
         Color:
             rgba: .7, .7, .7, self.debug_graphic_alpha
+        # Line to the wall avoidance lookup point
         Line:
             points: (self.pos[0], self.pos[1], self.lookup_point[0], self.lookup_point[1])
             width: 1
         Color:
             rgba: 0, 0, 1, self.debug_graphic_alpha
+        # Line to the steering force
         Line:
             points: (self.pos[0], self.pos[1], self.pos[0] + self.steering_force[0], self.pos[1] + self.steering_force[1])
             width: 1
         Color:
             rgba: 1, 0, 0, self.debug_graphic_alpha
+        # Line to the velocity
         Line:
             points: (self.pos[0], self.pos[1], self.pos[0] + 4 * self.velocity[0], self.pos[1] + 4 * self.velocity[1])
             width: 1
         Color:
             rgb: 1, .42, .2
+        # Vehicle body
         Ellipse:
             pos: self.pos[0] - self.size[0] / 2, self.pos[1] - self.size[1] / 2
             size: self.size
@@ -32,6 +36,7 @@
     canvas:
         Color:
             rgb: 0, 0, 0
+        # Wall body
         Rectangle:
             pos: self.x + 27, self.y + 27
             size: self.size[0] - 54, self.size[1] - 27
@@ -40,6 +45,7 @@
             width: 20
         Color:
             rgba: .9, 0, .9, self.debug_graphic_alpha
+        # Wall avoidance guidelines
         Line:
             points: (self.x, self.top, self.x, self.y, self.x + self.width, self.y, self.x + self.width, self.top)
             width: 1
