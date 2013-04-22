@@ -1,3 +1,4 @@
+import os
 import unittest
 import json
 
@@ -9,7 +10,8 @@ from rushsimulation.vehicle import Vehicle
 
 
 class TestBase(unittest.TestCase):
-    config_handler = ConfigHandler(json.load(open('tests/test_config.json')))
+    path = os.path.join(os.path.curdir, 'tests/test_config.json')
+    config_handler = ConfigHandler(json.load(open(path)))
     user_configs = config_handler.handle()
 
     def setUp(self):
