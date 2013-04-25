@@ -41,26 +41,26 @@ class RushSimulation(Widget):
         self.add_widget(self.wall_1)
         self.add_widget(self.wall_2)
 
-    def set_up_simulation(self):
+    def set_up(self):
         for i in xrange(self.vehicle_amount):
             vehicle = Vehicle(self.user_configs, self.target)
             self.add_widget(vehicle)
             self.vehicles.append(vehicle)
             vehicle.set_to_start_position()
 
-    def start_simulation(self):
+    def start(self):
         if len(self.vehicles) == 0:
-            self.set_up_simulation()
+            self.set_up()
         Clock.schedule_interval(self.update, 1.0 / 60.0)
         self.simulation_on = True
 
-    def pause_simulation(self):
+    def pause(self):
         Clock.unschedule(self.update)
         self.simulation_on = False
 
-    def stop_simulation(self):
+    def stop(self):
         if self.simulation_on:
-            self.pause_simulation()
+            self.pause()
         self.remove_all_vehicles()
 
     def add_vehicle(self, vehicle):
@@ -86,14 +86,14 @@ class RushSimulation(Widget):
 
     def start_pause_button_pressed(self):
         if self.simulation_on:
-            self.pause_simulation()
+            self.pause()
             self.start_pause_button.text = 'Start'
         else:
-            self.start_simulation()
+            self.start()
             self.start_pause_button.text = 'Pause'
 
     def stop_button_pressed(self):
-        self.stop_simulation()
+        self.stop()
         self.start_pause_button.text = 'Start'
 
 
