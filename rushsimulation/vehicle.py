@@ -28,7 +28,6 @@ class Vehicle(Widget):
     acceleration = Vector(0, 0)
     steering_force = Vector(0, 0)
     lookup_point = Vector(0, 0)
-    collision = Vector(0, 0)
 
     def __init__(self, user_configs, target_vector, *args, **kwargs):
         super(Vehicle, self).__init__(*args, **kwargs)
