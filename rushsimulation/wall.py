@@ -22,12 +22,10 @@ class Wall(Widget):
         """
         collison_point_x = self.get_collision_point_x(tip, pos)
         collison_point_y = self.get_collision_point_y(tip, pos)
-        # Todo: remove y-lookup
-        #collison_point_y = None
         if collison_point_x and collison_point_y:
             distance_x = Vector(pos).distance(collison_point_x)
             distance_y = Vector(pos).distance(collison_point_y)
-            if distance_x > distance_y:
+            if distance_x < distance_y:
                 return collison_point_x
             return collison_point_y
         elif collison_point_x:
