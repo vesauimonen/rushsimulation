@@ -27,6 +27,12 @@ class TestWall(TestBase):
         )
         self.assertEqual(point, expected_point)
 
+    def test_returns_x_collision_point_before_y(self):
+        pos = Vector(300, 495)
+        tip = Vector(400, 600)
+        point = self.wall.get_collision_point(tip, pos)
+        self.assertEqual(point[1], 500)
+
     def test_returns_none_collision_point(self):
         pos = Vector(400, 550)
         tip = Vector(410, 550)

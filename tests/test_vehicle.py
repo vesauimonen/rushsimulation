@@ -1,4 +1,5 @@
 import unittest
+import math
 
 from kivy.core.window import Window
 
@@ -48,8 +49,37 @@ class TestVehicle(TestBase):
     def test_set_to_start_position(self):
         self.vehicle.set_to_start_position()
         self.assertTrue(self.vehicle.max_speed >= 4)
+        # Position is hard to test due to randint, testing variable
+        # initializing instead.
         self.assertTrue(
             self.vehicle.max_speed <= self.user_configs['Vehicle']['maxSpeed']
+        )
+        self.assertTrue(
+            self.vehicle.max_speed > 0
+        )
+        self.assertEqual(
+            self.vehicle.velocity, Vector(0, 0)
+        )
+        self.assertEqual(
+            self.vehicle.acceleration, Vector(0, 0)
+        )
+        self.assertEqual(
+            self.vehicle.steering_force, Vector(0, 0)
+        )
+        self.assertEqual(
+            self.vehicle.lookup_point, self.vehicle.pos
+        )
+
+    def test_calculate_start_position(self):
+        point = self.vehicle.calculate_start_position()
+        r = math.sqrt(
+            pow((point[0] - self.vehicle.target[0]), 2) +
+            pow((point[1] - self.vehicle.target[1]), 2)
+        )
+        # Accepting rounding to up/down
+        self.assertTrue(
+            self.vehicle.START_POSITION_RADIUS == math.ceil(r) or
+            self.vehicle.START_POSITION_RADIUS == math.floor(r)
         )
 
     def test_get_nearby_vehicles(self):
@@ -89,7 +119,6 @@ class TestVehicle(TestBase):
             Vector(0, 0.05)
         )
         self.simulation.remove_vehicle(another_vehicle)
-
 
 if __name__ == '__main__':
     unittest.main()
